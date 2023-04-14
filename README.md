@@ -41,6 +41,28 @@ There are three main PowerShell scripts in this repository:
    - Paste the JSON policy document to allow termination of instances with the "Name" tag set to `minWIN`.
    - Review the policy, give it a name (e.g., "Terminate_Windows_Instance"), and create the policy.
 
+   ```json
+   
+   {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ec2:TerminateInstances",
+            "Resource": "arn:aws:ec2:*:*:instance/*",
+        }
+    ]
+    }
+   ```
+
+   ```json
+   
+   {
+            "Resource": "arn:aws:ec2:REGION:ACCOUNT_ID:instance/INSTANCE_ID"
+
+    }
+   ```
+
 2. Create an IAM Role:
    - In the IAM console, click on "Roles", then "Create role".
    - Select "AWS service" and "EC2", then click "Next: Permissions".
