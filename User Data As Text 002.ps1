@@ -1,6 +1,6 @@
 <powershell>
 # Set destination folder and log file path
-$destination = "C:\Users\Administrator"
+$destination = "C:\Program Files\AWS_min_WIN"
 $logFilePath = Join-Path $destination "log.txt"
 
 # Check if the destination folder exists, if not create it
