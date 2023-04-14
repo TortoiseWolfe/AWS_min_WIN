@@ -31,3 +31,28 @@ There are three main PowerShell scripts in this repository:
 5. The `monitor_inactivity.ps1` script will run in the background and monitor user inactivity starting at 5 PM. When a specified period of inactivity is detected, it will trigger the `shutdown_prompt.ps1` script, prompting the user to shut down the instance.
 
 6. If the user does not respond to the prompt within the specified time, the instance will be terminated automatically.
+
+## the Instance will need an IAM role with permission in order to delete itself
+
+-------------------------------------------------------
+
+1. Create an IAM Policy:
+   - Go to IAM console, click on "Policies", then "Create policy".
+   - Paste the JSON policy document to allow termination of instances with the "Name" tag set to `minWIN`.
+   - Review the policy, give it a name (e.g., "Terminate_Windows_Instance"), and create the policy.
+
+2. Create an IAM Role:
+   - In the IAM console, click on "Roles", then "Create role".
+   - Select "AWS service" and "EC2", then click "Next: Permissions".
+   - Search for the "TerminateWindowsInstance" policy, select it, and proceed.
+   - (Optional) Add tags, then give the role a name (e.g., "EC2_TerminateR") and create the role.
+
+3. Attach the IAM Role to your EC2 Windows Instance:
+   - In the EC2 console, select the Windows instance.
+   - Click "Instance Settings" -> "Attach/Replace IAM Role".
+   - Select the "EC2TerminateRole" and click "Apply".
+
+4. Tag your EC2 Windows Instance:
+   - In the EC2 console, select your Windows instance.
+   - Click on the "Tags" tab, then "Add/Edit Tags".
+   - Create a tag with the key "Name" and the value `minWIN`, then save.
