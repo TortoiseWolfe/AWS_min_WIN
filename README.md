@@ -78,3 +78,7 @@ There are three main PowerShell scripts in this repository:
    - In the EC2 console, select your Windows instance.
    - Click on the "Tags" tab, then "Add/Edit Tags".
    - Create a tag with the key "Name" and the value `minWIN`, then save.
+
+```powershell
+Start-Job -FilePath .\monitor_inactivity.ps1
+```

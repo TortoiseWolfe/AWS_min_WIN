@@ -1,5 +1,5 @@
 $inactive_time_threshold_minutes = 1
-$shutdown_prompt_script_path = "C:\path\to\shutdown_prompt.ps1"
+$shutdown_prompt_script_path = "C:\Program Files\AWS_min_WIN\shutdown_prompt.ps1"
 
 while ($true) {
     $current_time = Get-Date

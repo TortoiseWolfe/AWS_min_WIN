@@ -1,6 +1,7 @@
 <powershell>
 # Set destination folder and log file path
-$destination = "C:\Users\Administrator"
+# $destination = "C:\Users\Administrator"
+$destination = "C:\Program Files\AWS_min_WIN"
 $logFilePath = Join-Path $destination "log.txt"
 
 # Check if the destination folder exists, if not create it
@@ -26,7 +27,13 @@ choco install git -y
 Start-Sleep -Seconds 120
 
 # Refresh the environment variables
-refreshenv
+# refreshenv
+
+# Get the Git installation path
+$gitPath = (Get-Command git).Path
+
+# Add the Git binary path to the environment variables
+$env:Path += ";$(Split-Path $gitPath)"
 
 # Clone the repository
 $repoUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN.git"
@@ -38,7 +45,7 @@ try {
 }
 
 # Add a delay to allow git clone to finish
-Start-Sleep -Seconds 90
+# Start-Sleep -Seconds 90
 
 # Create the scheduled task to run monitor_inactivity.ps1 at startup
 $monitorScriptPath = Join-Path $destination "monitor_inactivity.ps1"
