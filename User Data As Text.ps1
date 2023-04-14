@@ -23,17 +23,20 @@ do {
 # Install Git using Chocolatey
 choco install git -y
 
-# Add a delay to allow Git to be installed
-Start-Sleep -Seconds 120
+# Install AWS CLI using Chocolatey
+choco install awscli -y
 
-# Refresh the environment variables
-# refreshenv
+# Add a delay to allow Git and AWS CLI to be installed
+Start-Sleep -Seconds 120
 
 # Get the Git installation path
 $gitPath = (Get-Command git).Path
 
 # Add the Git binary path to the environment variables
 $env:Path += ";$(Split-Path $gitPath)"
+
+# Refresh the environment variables
+refreshenv
 
 # Clone the repository
 $repoUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN.git"
@@ -43,9 +46,6 @@ try {
 } catch {
     Add-Content -Path $logFilePath -Value "Error cloning repository: $_"
 }
-
-# Add a delay to allow git clone to finish
-# Start-Sleep -Seconds 90
 
 # Create the scheduled task to run monitor_inactivity.ps1 at startup
 $monitorScriptPath = Join-Path $destination "monitor_inactivity.ps1"
