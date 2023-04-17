@@ -111,14 +111,22 @@ Start-Job -FilePath .\monitor_inactivity.ps1
 - **Key pairs consist of a public and private key that enable secure SSH connections.**
 - **To create a new key pair, navigate to the 'Key Pair' section in the instance creation wizard and choose 'Create a new key pair.' Download and save the private key (.pem) file securely.**
 
-## 4. Access from Local IP Address
+## 4. Security Group
 
 - **Configure the security group settings to allow access to your instance from your local IP address.**
 - **In the instance creation wizard, navigate to the 'Configure Security Group' section.**
 - **Create a new security group or select an existing one, and add a rule to allow traffic from your local IP address.**
 - **For SSH access, set the 'Type' to 'SSH', the 'Protocol' to 'TCP', and the 'Port Range' to '22'. Under 'Source,' choose 'My IP' to automatically populate your current IP address.**
 
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20105922.png?raw=true "1 Name Tag, 2 AMI, 3 Key, 4 Access from IP Address")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20105922.png?raw=true "1 Name Tag, 2 AMI, 3 Key, 4 Security Group")
+
+### 4.1 Security Group
+
+- **RDP port 3389 is open by default for Windows instances.**
+- **You can also add rules to allow specific IP addresses or address ranges to reach your instance.**
+- **By default, all inbound traffic is blocked and all outbound traffic is allowed.**
+
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/RDP3389%202023-04-17%20160323.png?raw=true "4.1 Security Group")
 
 ## 5. Spot Request
 
