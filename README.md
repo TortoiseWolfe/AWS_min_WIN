@@ -140,7 +140,7 @@ This README file provides a detailed outline on how to start a new instance on A
 
 After completing these steps, review your settings and click 'Launch' to start your new instance on AWS.  
 
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20105922.png?raw=true "1 Name Tag, 2 AMI, 3 Key, 4 Access from IP Address")
+<!-- ![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20110331.png?raw=true "5 Spot Request  6 IAM Permissions") -->
 ![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20110735.png?raw=true "7 User Data")
