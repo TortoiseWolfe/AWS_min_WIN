@@ -82,3 +82,65 @@ There are three main PowerShell scripts in this repository:
 ```powershell
 Start-Job -FilePath .\monitor_inactivity.ps1
 ```
+
+## Starting a New Instance on AWS
+
+This README file provides a detailed outline on how to start a new instance on AWS. It covers the following key points:
+
+1. Name Tag
+2. My AMI
+3. Key
+4. Access from Local IP Address
+5. Spot Request
+6. IAM Permissions
+7. User Data
+
+## 1. Name Tag
+
+- Assign a unique and descriptive name tag to your instance to easily identify it.
+- The name tag should follow a consistent naming convention for better organization.
+- To add a name tag, navigate to the 'Tags' tab in the instance creation wizard and click 'Add Tag.' Enter 'Name' as the key and your desired instance name as the value.
+
+## 2. My AMI
+
+- Choose an Amazon Machine Image (AMI) that meets your requirements.
+- The AMI is a template containing the software configuration (operating system, application server, and applications) needed to launch an instance.
+- AWS provides a variety of AMIs, including Amazon Linux, Ubuntu, Windows, and more. You can also create and use your own custom AMI.
+
+## 3. Key
+
+- Create or select an existing key pair for securely accessing your instance.
+- Key pairs consist of a public and private key that enable secure SSH connections.
+- To create a new key pair, navigate to the 'Key Pair' section in the instance creation wizard and choose 'Create a new key pair.' Download and save the private key (.pem) file securely.
+
+## 4. Access from Local IP Address
+
+- Configure the security group settings to allow access to your instance from your local IP address.
+- In the instance creation wizard, navigate to the 'Configure Security Group' section.
+- Create a new security group or select an existing one, and add a rule to allow traffic from your local IP address.
+- For SSH access, set the 'Type' to 'SSH', the 'Protocol' to 'TCP', and the 'Port Range' to '22'. Under 'Source,' choose 'My IP' to automatically populate your current IP address.
+
+## 5. Spot Request
+
+- To save costs, consider using Spot Instances, which allow you to bid on spare Amazon EC2 computing capacity.
+- In the instance creation wizard, navigate to the 'Configure Instance Details' section and select 'Request Spot Instances.'
+- Set your maximum price per instance hour, which should be less than the current Spot price for the desired instance type.
+
+## 6. IAM Permissions
+
+- Attach an IAM role to the instance to grant permissions for AWS service access.
+- Create a new IAM role or select an existing one based on your application requirements.
+- In the instance creation wizard, navigate to the 'Configure Instance Details' section and choose the desired IAM role from the 'IAM role' dropdown.
+
+## 7. User Data
+
+- Provide user data scripts or cloud-init directives to configure the instance on launch.
+- User data can be used for tasks such as installing software, configuring settings, or starting services.
+- In the instance creation wizard, navigate to the 'Configure Instance Details' section and enter your user data script or cloud-init directives in the 'User data' field.  
+
+After completing these steps, review your settings and click 'Launch' to start your new instance on AWS.  
+
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20081520.png?raw=true "5 Spot Request  6 IAM Permissions")
