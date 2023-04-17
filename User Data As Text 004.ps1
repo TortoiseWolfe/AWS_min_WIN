@@ -45,6 +45,18 @@ try {
     Add-Content -Path $logFilePath -Value "Error downloading and extracting repository: $_"
 }
 
+# Run the example_script.ps1 file from the repo
+$exampleScriptPath = Join-Path $destination "example_script.ps1"
+if (Test-Path $exampleScriptPath) {
+    try {
+        Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$exampleScriptPath`"" -NoNewWindow
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error running example_script.ps1: $_"
+    }
+} else {
+    Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
+}
+
 # $gitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v2.33.0.windows.2/Git-2.33.0.2-64-bit.exe"
 # $gitInstallerPath = "C:\GitInstaller.exe"
 
