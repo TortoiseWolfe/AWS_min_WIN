@@ -85,8 +85,6 @@ Start-Job -FilePath .\monitor_inactivity.ps1
 
 ## Starting a New Instance on AWS
 
-This README file provides a detailed outline on how to start a new instance on AWS. It covers the following key points:
-
 1. Name Tag
 2. My AMI
 3. Key
@@ -147,8 +145,6 @@ After completing these steps, review your settings and click 'Launch' to start y
 
 ## 8. Connect to Your Instance
 
-Once your instance is up and running, follow these steps to connect to it:
-
 ### 8.1. Download RDP File
 
 - If you are using a Windows instance, you will need to download the Remote Desktop Protocol (RDP) file.
@@ -179,14 +175,12 @@ Once your instance is up and running, follow these steps to connect to it:
 - When prompted for the password, paste the decrypted password you obtained in step 8.4.
 - Click 'OK' to connect to your instance.
 
-For SSH connections to Linux instances, use an SSH client and provide the private key (.pem) file, instance's public DNS name or public IP address, and the appropriate user name (e.g., 'ec2-user' for Amazon Linux, 'ubuntu' for Ubuntu, or 'root' for some custom AMIs).
-
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115039.png?raw=true "7 User Data")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115259.png?raw=true "7 User Data")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Key%202023-04-17%20115558.png?raw=true "7 User Data")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Decrypt%20PassWord%202023-04-17%20120019.png?raw=true "7 User Data")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Connect%20to%20RDP%202023-04-17%20120121.png?raw=true "7 User Data")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Paste%20PassWord%202023-04-17%20120333.png?raw=true "7 User Data")
+![8 Connect to Your Instancce](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115039.png?raw=true "8 Connect to Your Instance")
+![8.1 Download RDP File](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115259.png?raw=true "8.1 Download RDP File")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Key%202023-04-17%20115558.png?raw=true "8.2 Get Password")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Decrypt%20PassWord%202023-04-17%20120019.png?raw=true "8.3 Upload PEM File")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Connect%20to%20RDP%202023-04-17%20120121.png?raw=true "8.4 Decrypt Password")
+![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Paste%20PassWord%202023-04-17%20120333.png?raw=true "8.5 Select RDP File")
 
 ## 9. Post-Connection Instance Configuration
 
