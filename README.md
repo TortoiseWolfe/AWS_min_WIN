@@ -176,11 +176,11 @@ After completing these steps, review your settings and click 'Launch' to start y
 - Click 'OK' to connect to your instance.
 
 ![8 Connect to Your Instancce](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115039.png?raw=true "8 Connect to Your Instance")
-![8.1 Download RDP File](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115259.png?raw=true "8.1 Download RDP File")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Key%202023-04-17%20115558.png?raw=true "8.2 Get Password")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Decrypt%20PassWord%202023-04-17%20120019.png?raw=true "8.3 Upload PEM File")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Connect%20to%20RDP%202023-04-17%20120121.png?raw=true "8.4 Decrypt Password")
-![alt text](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Paste%20PassWord%202023-04-17%20120333.png?raw=true "8.5 Select RDP File")
+![8.1 Download RDP File 8.2 Get Passord](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Screenshot%202023-04-17%20115259.png?raw=true "8.1 Download RDP File 8.2 Get Passord")
+![8.3 Upload PEM File](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Key%202023-04-17%20115558.png?raw=true "8.3 Upload PEM File")
+![8.4 Decrypt Password](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Decrypt%20PassWord%202023-04-17%20120019.png?raw=true "8.4 Decrypt Password")
+![8.5 Select RDP File](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Connect%20to%20RDP%202023-04-17%20120121.png?raw=true "8.5 Select RDP File")
+![8.6 Paste Password](https://github.com/TortoiseWolfe/AWS_min_WIN/blob/main/docs/Paste%20PassWord%202023-04-17%20120333.png?raw=true "8.6 Paste Password")
 
 ## 9. Post-Connection Instance Configuration
 
