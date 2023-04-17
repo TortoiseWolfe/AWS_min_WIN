@@ -1,4 +1,3 @@
-<powershell>
 # Set destination folder and log file path
 $destination = "C:\Program Files\AWS_min_WIN"
 $logFilePath = Join-Path $destination "log.txt"
@@ -11,18 +10,6 @@ if (!(Test-Path $destination)) {
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 
-# Update PowerShell if required
-$psVersion = $PSVersionTable.PSVersion.Major
-if ($psVersion -lt 7) {
-    $powershellInstallerUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.1.5/PowerShell-7.1.5-win-x64.msi"
-    $powershellInstallerPath = "C:\PowerShellInstaller.msi"
-
-    (New-Object System.Net.WebClient).DownloadFile($powershellInstallerUrl, $powershellInstallerPath)
-
-    Start-Process -FilePath $powershellInstallerPath -ArgumentList "/qn" -Wait -NoNewWindow
-
-    Remove-Item $powershellInstallerPath
-}
 # Download and extract the Git repository without installing Git
 try {
     $repoUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN/archive/refs/heads/main.zip"
@@ -61,25 +48,6 @@ if (Test-Path $exampleScriptPath) {
     Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
 }
 
-# $gitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v2.33.0.windows.2/Git-2.33.0.2-64-bit.exe"
-# $gitInstallerPath = "C:\GitInstaller.exe"
-
-# (New-Object System.Net.WebClient).DownloadFile($gitInstallerUrl, $gitInstallerPath)
-
-# Start-Process -FilePath $gitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /NOICONS /COMPONENTS=assoc,assoc_sh" -Wait -NoNewWindow
-
-# Remove-Item $gitInstallerPath
-
-# $repoUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN.git"
-
-# try {
-#     git clone $repoUrl $destination -ErrorAction Stop
-# } catch {
-#     Add-Content -Path $logFilePath -Value "Error cloning repository: $_"
-# }
-
-# Start-Sleep -Seconds 90
-
 $monitorScriptPath = Join-Path $destination "monitor_inactivity.ps1"
 $action = "-ExecutionPolicy Bypass -File `"$monitorScriptPath`""
 schtasks.exe /Create /TN "Monitor Inactivity" /TR "powershell.exe $action" /SC ONSTART /RU SYSTEM /RL HIGHEST /F
@@ -100,7 +68,6 @@ Add-Type -AssemblyName PresentationFramework
 `$button = New-Object System.Windows.Controls.Button
 `$button.Content = "OK"
 `$button.Add_Click({ `$window.DialogResult = `$true })
-
 `$stackPanel = New-Object System.Windows.Controls.StackPanel
 `$stackPanel.Children.Add(`$label)
 `$stackPanel.Children.Add(`$button)
