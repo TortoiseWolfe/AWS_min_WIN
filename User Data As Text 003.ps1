@@ -11,6 +11,19 @@ if (!(Test-Path $destination)) {
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 
+# Update PowerShell if required
+$psVersion = $PSVersionTable.PSVersion.Major
+if ($psVersion -lt 7) {
+    $powershellInstallerUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.1.5/PowerShell-7.1.5-win-x64.msi"
+    $powershellInstallerPath = "C:\PowerShellInstaller.msi"
+
+    (New-Object System.Net.WebClient).DownloadFile($powershellInstallerUrl, $powershellInstallerPath)
+
+    Start-Process -FilePath $powershellInstallerPath -ArgumentList "/qn" -Wait -NoNewWindow
+
+    Remove-Item $powershellInstallerPath
+}
+
 $gitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v2.33.0.windows.2/Git-2.33.0.2-64-bit.exe"
 $gitInstallerPath = "C:\GitInstaller.exe"
 
