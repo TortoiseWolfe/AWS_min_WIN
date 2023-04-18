@@ -84,14 +84,14 @@ Start-Job -FilePath .\monitor_inactivity.ps1
 ```
 
 ## Starting a New Instance on AWS
-
-**1. Name Tag**
-**2. My AMI**
-**3. Key**
-**4. Access from Local IP Address**
-**5. Spot Request**
-**6. IAM Permissions**
-**7. User Data**
+<!-- 
+1. **Name Tag**
+2. **My AMI**
+3. **Key**
+4. **Access from Local IP Address**
+5. **Spot Request**
+6. **IAM Permissions**
+7. **User Data** -->
 
 ## 1. Name Tag
 
