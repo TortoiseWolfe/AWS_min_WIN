@@ -1,4 +1,4 @@
-$logFilePath = "C:\Program Files\AWS_min_WIN\log.txt"
+$logFilePath = "C:\Program Files\AWS_min_WIN\example_script_log.txt"
 
 $psVersion = $PSVersionTable.PSVersion
 $psVersionMessage = "PowerShell version: $($psVersion.Major).$($psVersion.Minor)"
@@ -33,7 +33,7 @@ try {
         Remove-Item $powershellInstallerPath
 
         # Restart the computer after installing PowerShell 7
-        Restart-Computer -Force
+        # Restart-Computer -Force
     }
 } catch {
     Add-Content -Path $logFilePath -Value "Error updating PowerShell: $_"
