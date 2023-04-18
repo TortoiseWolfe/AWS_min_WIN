@@ -1,3 +1,4 @@
+<powershell>
 # Set destination folder and log file path
 $destination = "C:\Program Files\AWS_min_WIN"
 $logFilePath = Join-Path $destination "log.txt"
@@ -10,7 +11,6 @@ if (!(Test-Path $destination)) {
 # Set the execution policy to bypass the current scope
 Set-ExecutionPolicy Bypass -Scope Process -Force
 
-# Set the security protocol to include TLS 1.2 
 # [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
 
@@ -56,3 +56,4 @@ if (Test-Path $exampleScriptPath) {
 
 # Reset the execution policy to RemoteSigned
 Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+</powershell>
