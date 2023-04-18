@@ -33,7 +33,6 @@ function InstallPowerShell7 {
         Add-Content -Path $logFilePath -Value "Error installing PowerShell 7: $_"
     }
 }
-
 function ShowCountdownModal {
     Add-Type -AssemblyName PresentationFramework
     $window = New-Object System.Windows.Window
@@ -53,7 +52,7 @@ function ShowCountdownModal {
     $timer.Interval = [TimeSpan]::FromSeconds(1)
 
     $timer.Add_Tick({
-        $elapsedTime = [int](Get-Date - $startTime).TotalSeconds
+        $elapsedTime = [int](New-TimeSpan -Start $startTime -End (Get-Date)).TotalSeconds
         $remainingTime = 60 - $elapsedTime
         $label.Content = "Time remaining: $remainingTime seconds"
 
@@ -110,9 +109,16 @@ try {
     Add-Content -Path $logFilePath -Value "Error displaying countdown modal: $_"
     Write-Host "Error displaying countdown modal: $_"
 }
+
 # Clone a GitHub repository
 $gitUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN.git"
 $repoFolder = "C:\RepoFolder"
+
+# Install Git
+$gitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v2.34.1.windows.1/Git-2.34.1-64-bit.exe"
+$gitInstallerPath = "C:\Windows\Temp\GitInstaller.exe"
+(New-Object System.Net.WebClient).DownloadFile($gitInstallerUrl, $gitInstallerPath)
+Start-Process -FilePath $gitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /SUPPRESSMSGBOXES /FORCECLOSEAPPLICATIONS" -Wait
 
 # Check if Git is installed
 $gitInstalled = Get-Command git -ErrorAction SilentlyContinue
@@ -128,5 +134,4 @@ if ($gitInstalled) {
     Add-Content -Path $logFilePath -Value "Git is not installed. Please install Git and try again."
     Write-Host "Git is not installed. Please install Git and try again."
 }
-
 </powershell>

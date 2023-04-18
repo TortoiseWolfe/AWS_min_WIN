@@ -33,7 +33,6 @@ function InstallPowerShell7 {
         Add-Content -Path $logFilePath -Value "Error installing PowerShell 7: $_"
     }
 }
-
 function ShowCountdownModal {
     Add-Type -AssemblyName PresentationFramework
     $window = New-Object System.Windows.Window
@@ -53,7 +52,7 @@ function ShowCountdownModal {
     $timer.Interval = [TimeSpan]::FromSeconds(1)
 
     $timer.Add_Tick({
-        $elapsedTime = [int](Get-Date - $startTime).TotalSeconds
+        $elapsedTime = [int](New-TimeSpan -Start $startTime -End (Get-Date)).TotalSeconds
         $remainingTime = 60 - $elapsedTime
         $label.Content = "Time remaining: $remainingTime seconds"
 
