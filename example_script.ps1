@@ -1,7 +1,8 @@
 $logFilePath = "C:\Program Files\AWS_min_WIN\log.txt"
 
 $psVersion = $PSVersionTable.PSVersion
-"PowerShell version: $($psVersion.Major).$($psVersion.Minor)"
+$psVersionMessage = "PowerShell version: $($psVersion.Major).$($psVersion.Minor)"
+Add-Content -Path $logFilePath -Value $psVersionMessage
 
 # Install the PSWindowsUpdate module if it's not already installed
 try {
@@ -30,10 +31,13 @@ try {
         Start-Process -FilePath $powershellInstallerPath -ArgumentList "/qn" -Wait -NoNewWindow
 
         Remove-Item $powershellInstallerPath
+
+        # Restart the computer after installing PowerShell 7
+        Restart-Computer -Force
     }
 } catch {
     Add-Content -Path $logFilePath -Value "Error updating PowerShell: $_"
 }
 
 # Add a message indicating the script completed without errors
-Add-Content -Path $logFilePath -Value "Example script executed successfully without errors."
+Add-Content -Path $logFilePath -Value "Example script reached the end"

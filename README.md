@@ -232,3 +232,7 @@ After connecting to your instance, you may need to perform additional configurat
 - Consider using Amazon S3 or another storage service for additional backup and storage options.
 
 By following these steps, you can successfully launch, connect to, and configure an AWS instance for your specific needs. Remember to continuously monitor, update, and maintain your instance to ensure its optimal performance and security.
+
+```powershell
+$PSVersionTable.PSVersion
+```
