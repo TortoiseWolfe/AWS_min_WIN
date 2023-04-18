@@ -19,13 +19,21 @@ Add-Content -Path $logFilePath -Value $psVersionMessage
 
 # Try to download and install PowerShell 7
 try {
-    $installerUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.1.5/PowerShell-7.1.5-win-x64.msi"
-    $installerPath = "C:\PowerShellInstaller.msi"
-    (New-Object System.Net.WebClient).DownloadFile($installerUrl, $installerPath)
-    Start-Process -FilePath $installerPath -ArgumentList "/qn" -Wait -NoNewWindow
+    # Save the current execution policy
+    $currentPolicy = Get-ExecutionPolicy
+    # Set the execution policy to unrestricted
+    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
+
+    # Download and install PowerShell 7 from Microsoft repository
+    $installScriptUrl = "https://aka.ms/install-powershell.ps1"
+    Invoke-Expression "& { $(Invoke-WebRequest -UseBasicParsing -Uri $installScriptUrl) }"
+
+    # Restore the execution policy
+    Set-ExecutionPolicy -ExecutionPolicy $currentPolicy -Scope Process -Force
 } catch {
     Add-Content -Path $logFilePath -Value "Error installing PowerShell 7: $_"
 }
+
 
 # Check if PowerShell 7 was installed successfully
 $pwshPath = "$($env:ProgramFiles)\PowerShell\7\pwsh.exe"
