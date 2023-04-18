@@ -234,7 +234,11 @@ After connecting to your instance, you may need to perform additional configurat
 By following these steps, you can successfully launch, connect to, and configure an AWS instance for your specific needs. Remember to continuously monitor, update, and maintain your instance to ensure its optimal performance and security.
 
 ```powershell
-https://github.com/TortoiseWolfe/AWS_min_WIN.git
+git  clone https://github.com/TortoiseWolfe/AWS_min_WIN.git
+```
+
+```powershell
+Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `".\update_PowerShell.ps1`"" -NoNewWindow
 ```
 
 ```powershell
