@@ -238,5 +238,9 @@ https://github.com/TortoiseWolfe/AWS_min_WIN.git
 ```
 
 ```powershell
+Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `".\update_WinDowz_001.ps1`"" -NoNewWindow
+```
+
+```powershell
 $PSVersionTable.PSVersion
 ```

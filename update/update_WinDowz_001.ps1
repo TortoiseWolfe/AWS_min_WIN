@@ -1,4 +1,4 @@
-$logFilePath = "C:\Program Files\AWS_min_WIN\update_WinDowz_log.txt"
+$logFilePath = "C:\Program Files\AWS_min_WIN\update_Windows_log.txt"
 
 $psVersion = $PSVersionTable.PSVersion
 $psVersionMessage = "PowerShell version: $($psVersion.Major).$($psVersion.Minor)"
@@ -22,14 +22,18 @@ try {
     # Import the PSWindowsUpdate module
     Import-Module PSWindowsUpdate
 
-    # Run Windows Update
-    Get-WindowsUpdate -Install -AcceptAll -Verbose
-
-    # Restart the computer after installing Windows Updates
-    Restart-Computer -Force
+    $updates = Get-WindowsUpdate -AcceptAll -Verbose
+    foreach ($update in $updates) {
+        $updateMessage = "Installing update: $($update.Title)"
+        Add-Content -Path $logFilePath -Value $updateMessage
+        Install-WindowsUpdate -Update $update -Verbose
+    }
+    
+    # Restart the computer after installing Windows Updates and wait for the restart to complete
+    Restart-Computer -Force -Wait
 } catch {
     Add-Content -Path $logFilePath -Value "Error updating Windows: $_"
 }
 
 # Add a message indicating the script completed without errors
-Add-Content -Path $logFilePath -Value "update_WinDowz script reached the end"
+Add-Content -Path $logFilePath -Value "update_Windows script reached the end"
