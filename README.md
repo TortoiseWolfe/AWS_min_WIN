@@ -248,3 +248,7 @@ Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass 
 ```powershell
 $PSVersionTable.PSVersion
 ```
+
+```powershell
+pwsh 
+```
