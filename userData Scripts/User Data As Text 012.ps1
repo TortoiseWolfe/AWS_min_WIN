@@ -1,5 +1,4 @@
-<powershell>
-# Set the path for the log file
+<powershell># Set the path for the log file
 $logFilePath = "C:\Users\Administrator\script_log.txt"
 
 # Check if the user has permission to write to the log file
@@ -41,5 +40,49 @@ if (Test-Path $pwshPath) {
 } else {
     Add-Content -Path $logFilePath -Value "PowerShell 7 installation failed"
 }
+
+if (Test-Path $pwshPath) {
+    & $pwshPath -Command {
+        # Check if the current version is PowerShell 7 or higher
+        $psVersion = $PSVersionTable.PSVersion
+        if ($psVersion.Major -lt 7) {
+            Write-Host "Please run this script in PowerShell 7 or higher."
+            exit 1
+        }
+
+        # Display a pop-up modal with a 60-second countdown
+        Add-Type -AssemblyName PresentationFramework
+        $window = New-Object System.Windows.Window
+        $window.Title = "Countdown"
+        $window.Width = 300
+        $window.Height = 200
+        $window.WindowStartupLocation = [System.Windows.WindowStartupLocation]::CenterScreen
+
+        $label = New-Object System.Windows.Controls.Label
+        $label.FontSize = 24
+        $label.HorizontalContentAlignment = [System.Windows.HorizontalAlignment]::Center
+        $label.VerticalContentAlignment = [System.Windows.VerticalAlignment]::Center
+        $window.Content = $label
+
+        $timer = New-Object System.Windows.Threading.DispatcherTimer
+        $startTime = Get-Date
+        $timer.Interval = [TimeSpan]::FromSeconds(1)
+
+        $timer.Add_Tick({
+            $elapsedTime = [int](Get-Date - $startTime).TotalSeconds
+            $remainingTime = 60 - $elapsedTime
+            $label.Content = "Time remaining: $remainingTime seconds"
+
+            if ($remainingTime -le 0) {
+                $timer.Stop()
+                $window.Close()
+            }
+        })
+
+        $timer.Start()
+        $window.ShowDialog()
+    }
+}
+
 
 </powershell>
