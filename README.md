@@ -252,3 +252,11 @@ $PSVersionTable.PSVersion
 ```powershell
 pwsh 
 ```
+
+```powershell
+Set-ExecutionPolicy Unrestricted -Scope Process
+```
+
+```powershell
+.\TimedMessageBox.ps1 
+```
