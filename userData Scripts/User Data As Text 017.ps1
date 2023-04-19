@@ -17,7 +17,6 @@ function CreateLogFile {
 
     return $logFilePath
 }
-
 function InstallPowerShell7 {
     param($zipUrl, $zipPath, $extractPath, $logFilePath)
 
@@ -33,24 +32,14 @@ function InstallPowerShell7 {
         Add-Content -Path $logFilePath -Value "Error installing PowerShell 7: $_"
     }
 }
-
 function InstallAwsCli {
     param($installerUrl, $logFilePath)
 
     try {
-        $tempInstaller = "C:\temp_awscliv2.zip"
+        $tempInstaller = "C:\temp_awscliv2.msi"
         (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
-        Expand-Archive -Path $tempInstaller -DestinationPath "C:\aws-cli"
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $tempInstaller /quiet" -Wait
         Remove-Item $tempInstaller
-        
-        $awsCliPath = "C:\aws-cli\aws"
-        if (Test-Path $awsCliPath) {
-            $env:Path += ";C:\aws-cli"
-            [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
-        } else {
-            Add-Content -Path $logFilePath -Value "Error installing AWS CLI: AWS CLI executable not found"
-        }
-        
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing AWS CLI: $_"
     }
@@ -58,7 +47,7 @@ function InstallAwsCli {
 
 # Main script starts here
 # Set destination folder and log file path
-$destination = "C:\Program Files\AWS_min_WIN"
+$destination = "C:\Users\Administrator\AWS_min_WIN"
 $logFilePath = "C:\Users\Administrator\user_Data_admin_LOG.txt"
 $fallbackLogPath = "$($env:USERPROFILE)\fallback_script_log.txt"
 
@@ -93,52 +82,53 @@ if ($psVersion.Major -lt 7) {
         exit 1
     }
 }
-    # Install AWS CLI
-    $awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2-2.3.0.zip"
-    InstallAwsCli -installerUrl $awsCliInstallerUrl -logFilePath $logFilePath
-    
-    # Check if the destination folder exists, if not create it
-    if (!(Test-Path $destination)) {
-        New-Item -ItemType Directory -Force -Path $destination
-    }
-    
-    # Set the execution policy to bypass the current scope
-    Set-ExecutionPolicy Bypass -Scope Process -Force
-    
-    # [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
-    
-    # Download and extract the repository without installing Git
+
+# Install AWS CLI
+$awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2.msi"
+InstallAwsCli -installerUrl $awsCliInstallerUrl -logFilePath $logFilePath
+
+# Check if the destination folder exists, if not create it
+if (!(Test-Path $destination)) {
+    New-Item -ItemType Directory -Force -Path $destination
+}
+
+# Set the execution policy to bypass the current scope
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+# [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
+
+# Download and extract the repository without installing Git
+try {
+    $repoUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN/archive/refs/heads/main.zip"
+    $repoZipPath = "C:\AWS_min_WIN.zip"
+    $repoExtractPath = "C:\AWS_min_WIN"
+
+    # Download the zip file from the repository URL
+    (New-Object System.Net.WebClient).DownloadFile($repoUrl, $repoZipPath)
+
+    # Extract the contents of the zip file
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($repoZipPath, $repoExtractPath)
+
+    # Move the contents of the extracted folder to the destination folder
+    $extractedRepoFolder = Join-Path $repoExtractPath "AWS_min_WIN-main"
+    Get-ChildItem -Path $extractedRepoFolder | Move-Item -Destination $destination
+
+    # Remove the downloaded zip file and the extracted folder
+    Remove-Item $repoZipPath
+    Remove-Item $repoExtractPath -Recurse
+} catch {
+    # Log any errors encountered while downloading and extracting the repository
+    Add-Content -Path $logFilePath -Value "Error downloading and extracting repository: $_"
+}
+
+# Run the example_script.ps1 file from the repo
+$exampleScriptPath = Join-Path $destination "example_script.ps1"
+$ps7Executable = "C:\PowerShell7\pwsh.exe"
+
+if (Test-Path $exampleScriptPath) {
     try {
-        $repoUrl = "https://github.com/TortoiseWolfe/AWS_min_WIN/archive/refs/heads/main.zip"
-        $repoZipPath = "C:\AWS_min_WIN.zip"
-        $repoExtractPath = "C:\AWS_min_WIN"
-    
-        # Download the zip file from the repository URL
-        (New-Object System.Net.WebClient).DownloadFile($repoUrl, $repoZipPath)
-    
-        # Extract the contents of the zip file
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($repoZipPath, $repoExtractPath)
-    
-        # Move the contents of the extracted folder to the destination folder
-        $extractedRepoFolder = Join-Path $repoExtractPath "AWS_min_WIN-main"
-        Get-ChildItem -Path $extractedRepoFolder | Move-Item -Destination $destination
-    
-        # Remove the downloaded zip file and the extracted folder
-        Remove-Item $repoZipPath
-        Remove-Item $repoExtractPath -Recurse
-    } catch {
-        # Log any errors encountered while downloading and extracting the repository
-        Add-Content -Path $logFilePath -Value "Error downloading and extracting repository: $_"
-    }
-    
-    # Run the example_script.ps1 file from the repo
-    $exampleScriptPath = Join-Path $destination "example_script.ps1"
-    $ps7Executable = "C:\PowerShell7\pwsh.exe"
-    
-    if (Test-Path $exampleScriptPath) {
-        try {
         # Execute the example_script.ps1 file using PowerShell 7
         Start-Process -FilePath $ps7Executable -ArgumentList "-ExecutionPolicy Bypass -File `"$exampleScriptPath`"" -NoNewWindow
     } catch {
@@ -149,41 +139,6 @@ if ($psVersion.Major -lt 7) {
     # Log an error if the example_script.ps1 file is not found in the repository
     Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
 }
-
-# # Display a pop-up modal with a 60-second countdown
-# $modalScript = {
-#     $modalForm = New-Object System.Windows.Forms.Form
-#     $modalForm.Text = 'Countdown'
-#     $modalForm.Size = New-Object System.Drawing.Size(300, 150)
-#     $modalForm.StartPosition = 'CenterScreen'
-#     $modalForm.FormBorderStyle = 'FixedDialog'
-
-#     $timer = New-Object System.Windows.Forms.Timer
-#     $timer.Interval = 1000
-
-#     $countdownLabel = New-Object System.Windows.Forms.Label
-#     $countdownLabel.Font = New-Object System.Drawing.Font("Arial", 12, [System.Drawing.FontStyle]::Bold)
-#     $countdownLabel.Location = New-Object System.Drawing.Point(110, 50)
-#     $countdownLabel.AutoSize = $true
-#     $modalForm.Controls.Add($countdownLabel)
-
-#     $seconds = 60
-#     $countdownLabel.Text = "$seconds seconds remaining"
-#     $timer.Add_Tick({ 
-#         $seconds--
-#         $countdownLabel.Text = "$seconds seconds remaining"
-#         if ($seconds -le 0) {
-#             $timer.Stop()
-#             $modalForm.Close()
-#         }
-#     })
-
-#     $timer.Start()
-#     $modalForm.ShowDialog()
-# }
-
-# [void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms')
-# Invoke-Command -ScriptBlock $modalScript
 
 # Reset the execution policy to RemoteSigned
 Set-ExecutionPolicy RemoteSigned -Scope Process -Force
