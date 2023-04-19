@@ -51,7 +51,7 @@ Add-Content -Path $logFilePath -Value $psVersionMessage
 # Rest of the script (PowerShell 7 installation and modal display)
 if ($psVersion.Major -lt 7) {
     # Download and install PowerShell 7
-    $zipUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.2.1/PowerShell-7.2.1-win-x64.zip"
+    $zipUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/PowerShell-7.3.4-win-x64.zip"
     $zipPath = "C:\PowerShellZip.zip"
     $extractPath = "C:\PowerShell7"
     
