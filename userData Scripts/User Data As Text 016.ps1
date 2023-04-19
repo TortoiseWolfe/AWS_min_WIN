@@ -38,10 +38,19 @@ function InstallAwsCli {
     param($installerUrl, $logFilePath)
 
     try {
-        $tempInstaller = "C:\temp_awscliv2.exe"
+        $tempInstaller = "C:\temp_awscliv2.zip"
         (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
-        Start-Process -FilePath $tempInstaller -ArgumentList "/quiet" -Wait
+        Expand-Archive -Path $tempInstaller -DestinationPath "C:\aws-cli"
         Remove-Item $tempInstaller
+        
+        $awsCliPath = "C:\aws-cli\aws"
+        if (Test-Path $awsCliPath) {
+            $env:Path += ";C:\aws-cli"
+            [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
+        } else {
+            Add-Content -Path $logFilePath -Value "Error installing AWS CLI: AWS CLI executable not found"
+        }
+        
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing AWS CLI: $_"
     }
@@ -86,7 +95,7 @@ if ($psVersion.Major -lt 7) {
 }
 
 # Install AWS CLI
-$awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2.msi"
+$awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2-2.3.0.zip"
 InstallAwsCli -installerUrl $awsCliInstallerUrl -logFilePath $logFilePath
 
 
@@ -147,7 +156,8 @@ if (Test-Path $exampleScriptPath) {
 # Clone a GitHub repository
 # Install Git
 # Check if Git is installed
-# Display a pop-up modal with a 60-second countdown
+# Display a pop-up modal with a 60-second 
+
 # Reset the execution policy to RemoteSigned
 Set-ExecutionPolicy RemoteSigned -Scope Process -Force
 </powershell>
