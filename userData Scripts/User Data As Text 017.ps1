@@ -40,6 +40,7 @@ function InstallAwsCli {
         (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $tempInstaller /quiet" -Wait
         Remove-Item $tempInstaller
+        Add-Content -Path $logFilePath -Value "AWS CLI installed successfully"
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing AWS CLI: $_"
     }
