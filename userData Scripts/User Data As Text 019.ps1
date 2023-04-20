@@ -45,7 +45,19 @@ function InstallAwsCli {
         Add-Content -Path $logFilePath -Value "Error installing AWS CLI: $_"
     }
 }# InstallAwsCli function downloads and installs AWS CLI from a specified URL.
+function InstallDotNetRuntime {
+    param($runtimeInstallerUrl, $logFilePath)
 
+    try {
+        $tempInstaller = "C:\temp_dotnet_runtime.exe"
+        (New-Object System.Net.WebClient).DownloadFile($runtimeInstallerUrl, $tempInstaller)
+        Start-Process -FilePath $tempInstaller -ArgumentList "/install /quiet /norestart" -Wait
+        Remove-Item $tempInstaller
+        Add-Content -Path $logFilePath -Value ".NET Runtime installed successfully"
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing .NET Runtime: $_"
+    }
+}# InstallDotNetRuntime function downloads and installs .NET Runtime from a specified URL.
 function DownloadAndRunExampleScript {
     param($repoUrl, $repoZipPath, $repoExtractPath, $destination, $logFilePath)
 
@@ -89,7 +101,6 @@ function DownloadAndRunExampleScript {
         Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
     }
 }# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.
-
 # Main script starts here
 try {
     # Set destination folder and log file path
@@ -131,6 +142,10 @@ try {
     # Install AWS CLI
     $awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2.msi"
     InstallAwsCli -installerUrl $awsCliInstallerUrl -logFilePath $logFilePath
+    
+    # Install .NET Runtime
+    $dotNetRuntimeInstallerUrl = "https://download.visualstudio.microsoft.com/download/pr/85473c45-8d91-48cb-ab41-86ec7abc1000/83cd0c82f0cde9a566bae4245ea5a65b/windowsdesktop-runtime-6.0.16-win-x64.exe    "
+    InstallDotNetRuntime -runtimeInstallerUrl $dotNetRuntimeInstallerUrl -logFilePath $logFilePath
 
     # Check if the destination folder exists, if not create it
     if (!(Test-Path $destination)) {
@@ -159,4 +174,5 @@ try {
 }
 # Reset the execution policy to RemoteSigned
 Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+# Restart-Computer
 </powershell>
