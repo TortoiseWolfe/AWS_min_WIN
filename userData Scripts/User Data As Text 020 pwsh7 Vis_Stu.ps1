@@ -88,7 +88,6 @@ function DownloadAndRunExampleScript {
         Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
     }
 }# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.
-
 function InstallVisualStudioCommunity {
     param($installerUrl, $logFilePath)
 
@@ -126,8 +125,8 @@ try {
     if ($psVersion.Major -lt 7) {
         # Download and install PowerShell 7
         $zipUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/PowerShell-7.3.4-win-x64.zip"
-        $zipPath = "C:\PowerShellZip.zip"
-        $extractPath = "C:\PowerShell7"
+        $zipPath = "C:\Downloads\PowerShellZip.zip"
+        $extractPath = "C:\Program Files\PowerShell7"
         
         InstallPowerShell7 -zipUrl $zipUrl -zipPath $zipPath -extractPath $extractPath -logFilePath $logFilePath
         
