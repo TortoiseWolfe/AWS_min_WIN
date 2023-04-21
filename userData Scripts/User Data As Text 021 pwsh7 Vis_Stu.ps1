@@ -16,7 +16,7 @@ function CreateLogFile {
     }
 
     return $logFilePath
-}   # CreateLogFile function creates a log file at the specified path or fallback path.
+}# CreateLogFile function creates a log file at the specified path or fallback path.
 function InstallPowerShell7 {
     param($zipUrl, $zipPath, $extractPath, $logFilePath)
 
@@ -73,7 +73,7 @@ function DownloadAndRunExampleScript {
 
     # Run the example_script.ps1 file from the repo
     $exampleScriptPath = Join-Path $destination "example_script.ps1"
-    $ps7Executable = "C:\PowerShell7\pwsh.exe"
+    $ps7Executable = "C:\Program Files\PowerShell7\pwsh.exe"
 
     if (Test-Path $exampleScriptPath) {
         try {
@@ -106,8 +106,7 @@ function InstallVisualStudioCommunity {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Visual Studio Community: $_"
     }
-}
- # InstallVisualStudioCommunity function downloads and installs Visual Studio Community with specified workloads.
+}# InstallVisualStudioCommunity function downloads and installs Visual Studio Community with specified workloads.
 
 # Main script starts here
 try {
