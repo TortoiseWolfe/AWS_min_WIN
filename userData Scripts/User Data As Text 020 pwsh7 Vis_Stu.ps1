@@ -131,7 +131,7 @@ try {
         InstallPowerShell7 -zipUrl $zipUrl -zipPath $zipPath -extractPath $extractPath -logFilePath $logFilePath
         
         # Check if PowerShell 7 was installed successfully
-        $pwshPath = "C:\PowerShell7\pwsh.exe"
+        $pwshPath = "C:\Program Files\PowerShell7\pwsh.exe"
         if (Test-Path $pwshPath) {
             Add-Content -Path $logFilePath -Value "PowerShell 7 installed successfully"
             & $pwshPath -Command {
