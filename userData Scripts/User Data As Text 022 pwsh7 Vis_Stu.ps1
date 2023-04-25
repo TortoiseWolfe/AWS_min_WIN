@@ -17,6 +17,19 @@ function CreateLogFile {
 
     return $logFilePath
 }# CreateLogFile function creates a log file at the specified path or fallback path.
+function InstallDotNetRuntime {
+    param($runtimeInstallerUrl, $logFilePath)
+
+    try {
+        $tempInstaller = "C:\temp_dotnet_runtime.exe"
+        (New-Object System.Net.WebClient).DownloadFile($runtimeInstallerUrl, $tempInstaller)
+        Start-Process -FilePath $tempInstaller -ArgumentList "/install /quiet /norestart" -Wait
+        Remove-Item $tempInstaller
+        Add-Content -Path $logFilePath -Value ".NET Runtime installed successfully"
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing .NET Runtime: $_"
+    }
+}# InstallDotNetRuntime function downloads and installs .NET Runtime from a specified URL.
 function InstallPowerShell7 {
     param($zipUrl, $zipPath, $extractPath, $logFilePath)
 
