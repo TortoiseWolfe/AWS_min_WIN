@@ -120,6 +120,19 @@ function InstallVisualStudioCommunity {
         Add-Content -Path $logFilePath -Value "Error installing Visual Studio Community: $_"
     }
 }# InstallVisualStudioCommunity function downloads and installs Visual Studio Community with specified workloads.
+function InstallDropbox {
+    param($installerUrl, $logFilePath)
+
+    try {
+        $tempInstaller = "C:\temp_dropbox_installer.exe"
+        (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
+        Start-Process -FilePath $tempInstaller -ArgumentList "/S" -Wait
+        Remove-Item $tempInstaller
+        Add-Content -Path $logFilePath -Value "Dropbox installed successfully"
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing Dropbox: $_"
+    }
+}# InstallDropbox function downloads and installs Dropbox from a specified URL.
 
 # Main script starts here
 try {
@@ -159,6 +172,11 @@ try {
         }
     }
 
+    # Set the timezone variable
+    $timezone = "Eastern Standard Time"
+    # Set the timezone on the AWS instance
+    Set-TimeZone -Id $timezone
+
     # Install AWS CLI
     # $awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2.msi"
     # InstallAwsCli -installerUrl $awsCliInstallerUrl -logFilePath $logFilePath
@@ -166,7 +184,11 @@ try {
     # Install Visual Studio Community
     # $vsCommunityInstallerUrl = "https://aka.ms/vs/22/release/vs_community.exe"
     # InstallVisualStudioCommunity -installerUrl $vsCommunityInstallerUrl -logFilePath $logFilePath
-    
+
+    # Install Dropbox
+    $dropboxInstallerUrl = "https://www.dropbox.com/download?plat=win&type=full"
+    InstallDropbox -installerUrl $dropboxInstallerUrl -logFilePath $logFilePath
+
     # # Install .NET Runtime
     $dotNetRuntimeInstallerUrl = "https://download.visualstudio.microsoft.com/download/pr/85473c45-8d91-48cb-ab41-86ec7abc1000/83cd0c82f0cde9a566bae4245ea5a65b/windowsdesktop-runtime-6.0.16-win-x64.exe    "
     InstallDotNetRuntime -runtimeInstallerUrl $dotNetRuntimeInstallerUrl -logFilePath $logFilePath
