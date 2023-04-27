@@ -20,27 +20,22 @@ function CreateLogFile {
 function DownloadAndRunExampleScript {
     param($repoUrl, $repoZipPath, $repoExtractPath, $destination, $logFilePath)
 
-    try {
-        # Download the zip file from the repository URL
-        (New-Object System.Net.WebClient).DownloadFile($repoUrl, $repoZipPath)
+    # Download the zip file from the repository URL
+    (New-Object System.Net.WebClient).DownloadFile($repoUrl, $repoZipPath)
 
-        # Extract the contents of the zip file
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($repoZipPath, $repoExtractPath)
+    # Extract the contents of the zip file
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($repoZipPath, $repoExtractPath)
 
-        # Move the contents of the extracted folder to the destination folder
-        $extractedRepoFolder = Join-Path $repoExtractPath "AWS_min_WIN-main"
-        Get-ChildItem -Path $extractedRepoFolder | Move-Item -Destination $destination
+    # Move the contents of the extracted folder to the destination folder
+    $extractedRepoFolder = Join-Path $repoExtractPath "AWS_min_WIN-main"
+    Get-ChildItem -Path $extractedRepoFolder | Move-Item -Destination $destination
 
-        # Remove the downloaded zip file and the extracted folder
-        Remove-Item $repoZipPath
-        Remove-Item $repoExtractPath -Recurse
+    # Remove the downloaded zip file and the extracted folder
+    Remove-Item $repoZipPath
+    Remove-Item $repoExtractPath -Recurse
 
-        Add-Content -Path $logFilePath -Value "Repository downloaded and extracted successfully"
-    } catch {
-        # Log any errors encountered while downloading and extracting the repository
-        Add-Content -Path $logFilePath -Value "Error downloading and extracting repository: $_"
-    }
+    Add-Content -Path $logFilePath -Value "Repository downloaded and extracted successfully"
 
     # Run the example_script.ps1 file from the repo
     $exampleScriptPath = Join-Path $destination "example_script.ps1"
@@ -59,21 +54,7 @@ function DownloadAndRunExampleScript {
         # Log an error if the example_script.ps1 file is not found in the repository
         Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
     }
-}# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.
-function InstallAwsCli {
-    param($installerUrl, $logFilePath)
-
-    try {
-        $tempInstaller = "C:\temp_awscliv2.msi"
-        (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
-        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $tempInstaller /quiet" -Wait
-        Remove-Item $tempInstaller
-        Add-Content -Path $logFilePath -Value "AWS CLI installed successfully"
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing AWS CLI: $_"
-    }
-}# InstallAwsCli function downloads and installs AWS CLI from a specified URL.
-function InstallBluebeam {
+}# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.function InstallBluebeam {
     param($installerUrl, $logFilePath)
 
     try {
@@ -85,7 +66,6 @@ function InstallBluebeam {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Bluebeam: $_"
     }
-}# InstallBluebeam function downloads and installs Bluebeam from a specified URL.
 function InstallChrome {
     param($installerUrl, $logFilePath)
 
@@ -98,7 +78,7 @@ function InstallChrome {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Google Chrome: $_"
     }
-}# InstallChrome function downloads and installs Google Chrome from a specified URL.
+}
 function InstallDotNetRuntime {
     param($runtimeInstallerUrl, $logFilePath)
 
@@ -111,7 +91,7 @@ function InstallDotNetRuntime {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing .NET Runtime: $_"
     }
-}# InstallDotNetRuntime function downloads and installs .NET Runtime from a specified URL.
+}
 function InstallDropbox {
     param($installerUrl, $logFilePath)
 
@@ -124,7 +104,7 @@ function InstallDropbox {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Dropbox: $_"
     }
-}# InstallDropbox function downloads and installs Dropbox from a specified URL.
+}
 function InstallOffice365 {
     param($odtUrl, $configUrl, $logFilePath)
 
@@ -146,7 +126,7 @@ function InstallOffice365 {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Office 365: $_"
     }
-}# InstallOffice365 function installs Office 365 using the Office Deployment Tool.
+}
 function InstallPowerShell7 {
     param($zipUrl, $zipPath, $extractPath, $logFilePath)
 
@@ -156,13 +136,12 @@ function InstallPowerShell7 {
         Expand-Archive -Path $zipPath -DestinationPath $extractPath
 
         # Add PowerShell 7 folder to the system PATH
-        $env:Path += ";$extractPath"
-        [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
+        [Environment]::SetEnvironmentVariable("Path", "$env:Path;$extractPath", [System.EnvironmentVariableTarget]::Machine)
 
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing PowerShell 7: $_"
     }
-}# InstallPowerShell7 function downloads and installs PowerShell 7 from a specified URL.
+}
 function InstallTeamwork {
     param($installerUrl, $logFilePath)
 
@@ -175,25 +154,7 @@ function InstallTeamwork {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Teamwork: $_"
     }
-}# InstallTeamwork function downloads and installs Teamwork from a specified URL.
-function InstallVisualStudioCommunity {
-    param($installerUrl, $logFilePath)
-
-    try {
-        $tempInstaller = "C:\Users\Administrator\Downloads\temp_vs_community.exe"
-        (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
-
-        # Define the installation workloads for WinForms and WPF
-        $installWorkloads = "--add Microsoft.VisualStudio.Workload.ManagedDesktop --includeRecommended"
-
-        # Install Visual Studio Community
-        Start-Process -FilePath $tempInstaller -ArgumentList "--quiet --norestart --wait $installWorkloads" -Wait -PassThru
-        Remove-Item $tempInstaller
-        Add-Content -Path $logFilePath -Value "Visual Studio Community installed successfully"
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Visual Studio Community: $_"
-    }
-}# InstallVisualStudioCommunity function downloads and installs Visual Studio Community with specified workloads.
+}
 function InstallZoom {
     param($installerUrl, $logFilePath)
 
@@ -206,8 +167,7 @@ function InstallZoom {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Zoom: $_"
     }
-}# InstallZoom function downloads and installs Zoom from a specified URL.
-
+}
 # Main script starts here
 try {
     # Set destination folder and log file path
@@ -250,10 +210,6 @@ try {
     $timezone = "Eastern Standard Time"
     # Set the timezone on the AWS instance
     Set-TimeZone -Id $timezone
-
-    # Install AWS CLI
-    # $awsCliInstallerUrl = "https://awscli.amazonaws.com/AWSCLIV2.msi"
-    # InstallAwsCli -installerUrl $awsCliInstallerUrl -logFilePath $logFilePath
     
     # Install Bluebeam
     # https://subscription-registration.bluebeam.com/
@@ -310,9 +266,6 @@ try {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Teamwork Projects Desktop: $_"
     }
-    # Install Visual Studio Community
-    # $vsCommunityInstallerUrl = "https://aka.ms/vs/22/release/vs_community.exe"
-    # InstallVisualStudioCommunity -installerUrl $vsCommunityInstallerUrl -logFilePath $logFilePath
 
     # Install Zoom
     # https://cdn.zoom.us/prod/5.5.12494.0204/ZoomInstaller.exe
