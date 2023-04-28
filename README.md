@@ -1,5 +1,7 @@
 # Inactivity Monitoring and Shutdown
 
+https://downloads.bluebeam.com/software/downloads/20.2.90/BbRevu20.2.90.exe
+
 -------------------------------------------------------
 <https://youtu.be/jnQoRZkPoWM>
 
