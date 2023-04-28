@@ -141,7 +141,6 @@ function InstallTeamwork {
         Add-Content -Path $logFilePath -Value "Error installing Teamwork: $_"
     }
 }# InstallTeamwork function downloads and installs Teamwork from a specified URL.
-
 function InstallZoom {
     param($installerUrl, $logFilePath)
 
@@ -249,6 +248,7 @@ try {
     }
 
     # Install Teamwork
+    # https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe
     # https://www.teamwork.com/chat-apps
     try {
         $teamworkInstallerUrl = "https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe"
