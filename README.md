@@ -1,6 +1,8 @@
 # Inactivity Monitoring and Shutdown
-
+<!-- .8 gigs -->
 https://downloads.bluebeam.com/software/downloads/20.2.90/BbRevu20.2.90.exe
+<!-- 1.6 gigs -->
+https://help.autodesk.com/view/CONNECT/ENU/?guid=Install_Desktop_Connector
 
 -------------------------------------------------------
 <https://youtu.be/jnQoRZkPoWM>
