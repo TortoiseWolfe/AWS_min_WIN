@@ -60,13 +60,13 @@ function DownloadAndRunExampleScript {
         Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
     }
 }# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.
-function InstallBluebeam {
+function InstallBluebeam{
     param($installerUrl, $logFilePath)
 
     try {
-        $tempInstaller = "C:\temp_bluebeam.exe"
+        $tempInstaller = "C:\temp_bluebeam_installer.exe"
         (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
-        Start-Process -FilePath $tempInstaller -ArgumentList "/quiet", "/lang en-US" -Wait
+        Start-Process -FilePath $tempInstaller -ArgumentList "/S" -Wait
         Remove-Item $tempInstaller
         Add-Content -Path $logFilePath -Value "Bluebeam installed successfully"
     } catch {
@@ -112,6 +112,45 @@ function InstallDropbox {
         Add-Content -Path $logFilePath -Value "Error installing Dropbox: $_"
     }
 }# InstallDropbox function downloads and installs Dropbox from a specified URL.
+function InstallOffice365 {
+    param($logFilePath)
+
+    try {
+        # Download and extract the Office Deployment Tool
+        $odtUrl = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_13426-20270.exe"
+        $tempOdtFile = "C:\temp\odt.exe"
+        (New-Object System.Net.WebClient).DownloadFile($odtUrl, $tempOdtFile)
+
+        $odtFolder = "C:\temp\odt"
+        New-Item -ItemType Directory -Force -Path $odtFolder
+        Start-Process -FilePath $tempOdtFile -ArgumentList "/extract:$odtFolder" -Wait
+        Remove-Item $tempOdtFile
+
+        # Create the configuration XML file
+        $configXmlContent = @"
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="SemiAnnual">
+    <Product ID="O365ProPlusRetail">
+      <Language ID="en-us" />
+    </Product>
+  </Add>
+  <Updates Enabled="TRUE" Channel="SemiAnnual" />
+  <Display Level="None" AcceptEULA="TRUE" />
+  <Property Name="AUTOACTIVATE" Value="1" />
+</Configuration>
+"@
+        $configXmlPath = "C:\temp\config.xml"
+        Set-Content -Path $configXmlPath -Value $configXmlContent
+
+        # Install Office 365 using the configuration XML file
+        $setupPath = Join-Path -Path $odtFolder -ChildPath "setup.exe"
+        Start-Process -FilePath $setupPath -ArgumentList "/configure", $configXmlPath -Wait
+
+        Add-Content -Path $logFilePath -Value "Office 365 installed successfully"
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing Office 365: $_"
+    }
+}
 function InstallPowerShell7 {
     param($zipUrl, $zipPath, $extractPath, $logFilePath)
 
@@ -199,29 +238,12 @@ try {
     Set-TimeZone -Id $timezone
     
     # Install Bluebeam Revu
-    try {
-        $bluebeamInstallerUrl = "https://support.bluebeam.com/downloads/revu/windows/revu2020/20.2.30/BluebeamRevu2020.2.30_x64.exe"
-        $bluebeamLocalPath = "C:\temp_bluebeam_installer.exe"
-        $webClient = New-Object System.Net.WebClient
-        $webClient.DownloadFile($bluebeamInstallerUrl, $bluebeamLocalPath)
-        Start-Process -FilePath $bluebeamLocalPath -Args "/quiet" -Wait
-        Remove-Item $bluebeamLocalPath
-        Add-Content -Path $logFilePath -Value "Bluebeam Revu installed successfully"
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Bluebeam Revu: $_"
-    }
+    $bluebeamInstallerUrl = "https://support.bluebeam.com/downloads/revu/windows/revu2020/20.2.30/BluebeamRevu2020.2.30_x64.exe"
+    InstallBluebeam -installerUrl $bluebeamInstallerUrl -logFilePath $logFilePath
 
     # Install Google Chrome
-    try {
-        $chrome_url = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
-        $chrome_local_path = "C:\temp_chrome_installer.exe"
-        $webClient = New-Object System.Net.WebClient
-        $webClient.DownloadFile($chrome_url, $chrome_local_path)
-        Start-Process -FilePath $chrome_local_path -Args "/silent /install" -Wait
-
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Google Chrome Browser: $_"
-    }
+    $chromeInstallerUrl = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
+    InstallChrome -installerUrl $chromeInstallerUrl -logFilePath $logFilePath
     
     # Install Dropbox
     try {
@@ -240,12 +262,7 @@ try {
     }
 
     # Install Office 365
-    try {
-        $office365InstallerUrl = "https://go.microsoft.com/fwlink/?linkid=525133"
-        InstallOffice365 -installerUrl $office365InstallerUrl -logFilePath $logFilePath
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Office 365: $_"
-    }
+    InstallOffice365 -logFilePath $logFilePath
 
     # Install Teamwork
     # https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe
