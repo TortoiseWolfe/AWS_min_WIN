@@ -20,22 +20,27 @@ function CreateLogFile {
 function DownloadAndRunExampleScript {
     param($repoUrl, $repoZipPath, $repoExtractPath, $destination, $logFilePath)
 
-    # Download the zip file from the repository URL
-    (New-Object System.Net.WebClient).DownloadFile($repoUrl, $repoZipPath)
+    try {
+        # Download the zip file from the repository URL
+        (New-Object System.Net.WebClient).DownloadFile($repoUrl, $repoZipPath)
 
-    # Extract the contents of the zip file
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($repoZipPath, $repoExtractPath)
+        # Extract the contents of the zip file
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($repoZipPath, $repoExtractPath)
 
-    # Move the contents of the extracted folder to the destination folder
-    $extractedRepoFolder = Join-Path $repoExtractPath "AWS_min_WIN-main"
-    Get-ChildItem -Path $extractedRepoFolder | Move-Item -Destination $destination
+        # Move the contents of the extracted folder to the destination folder
+        $extractedRepoFolder = Join-Path $repoExtractPath "AWS_min_WIN-main"
+        Get-ChildItem -Path $extractedRepoFolder | Move-Item -Destination $destination
 
-    # Remove the downloaded zip file and the extracted folder
-    Remove-Item $repoZipPath
-    Remove-Item $repoExtractPath -Recurse
+        # Remove the downloaded zip file and the extracted folder
+        Remove-Item $repoZipPath
+        Remove-Item $repoExtractPath -Recurse
 
-    Add-Content -Path $logFilePath -Value "Repository downloaded and extracted successfully"
+        Add-Content -Path $logFilePath -Value "Repository downloaded and extracted successfully"
+    } catch {
+        # Log any errors encountered while downloading and extracting the repository
+        Add-Content -Path $logFilePath -Value "Error downloading and extracting repository: $_"
+    }
 
     # Run the example_script.ps1 file from the repo
     $exampleScriptPath = Join-Path $destination "example_script.ps1"
@@ -67,7 +72,7 @@ function InstallBluebeam {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Bluebeam: $_"
     }
-}
+}# InstallBluebeam function downloads and installs Bluebeam from a specified URL.
 function InstallChrome {
     param($installerUrl, $logFilePath)
 
@@ -80,7 +85,7 @@ function InstallChrome {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Google Chrome: $_"
     }
-}
+}# InstallChrome function downloads and installs Google Chrome from a specified URL.
 function InstallDotNetRuntime {
     param($runtimeInstallerUrl, $logFilePath)
 
@@ -93,7 +98,7 @@ function InstallDotNetRuntime {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing .NET Runtime: $_"
     }
-}
+}# InstallDotNetRuntime function downloads and installs .NET Runtime from a specified URL.
 function InstallDropbox {
     param($installerUrl, $logFilePath)
 
@@ -106,29 +111,7 @@ function InstallDropbox {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Dropbox: $_"
     }
-}
-function InstallOffice365 {
-    param($odtUrl, $configUrl, $logFilePath)
-
-    try {
-        # Download the Office Deployment Tool
-        $odtPath = "C:\temp_odt"
-        $odtSetupPath = Join-Path $odtPath "setup.exe"
-        New-Item -ItemType Directory -Force -Path $odtPath | Out-Null
-        (New-Object System.Net.WebClient).DownloadFile($odtUrl, $odtSetupPath)
-
-        # Download the configuration XML
-        $configPath = Join-Path $odtPath "configuration.xml"
-        (New-Object System.Net.WebClient).DownloadFile($configUrl, $configPath)
-
-        # Install Office 365 using the Office Deployment Tool
-        Start-Process -FilePath $odtSetupPath -ArgumentList "/configure $configPath" -Wait
-
-        Add-Content -Path $logFilePath -Value "Office 365 installed successfully"
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Office 365: $_"
-    }
-}
+}# InstallDropbox function downloads and installs Dropbox from a specified URL.
 function InstallPowerShell7 {
     param($zipUrl, $zipPath, $extractPath, $logFilePath)
 
@@ -138,26 +121,27 @@ function InstallPowerShell7 {
         Expand-Archive -Path $zipPath -DestinationPath $extractPath
 
         # Add PowerShell 7 folder to the system PATH
-        [Environment]::SetEnvironmentVariable("Path", "$env:Path;$extractPath", [System.EnvironmentVariableTarget]::Machine)
+        $env:Path += ";$extractPath"
+        [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
 
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing PowerShell 7: $_"
     }
-}
+}# InstallPowerShell7 function downloads and installs PowerShell 7 from a specified URL.
 function InstallTeamwork {
-    param($appName, $installerUrl, $logFilePath)
-    
+    param($installerUrl, $logFilePath)
+
     try {
-        $tempInstaller = "C:\temp_$($appName).exe"
+        $tempInstaller = "C:\temp_teamwork.exe"
         (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
         Start-Process -FilePath $tempInstaller -ArgumentList "/quiet" -Wait
         Remove-Item $tempInstaller
-        Add-Content -Path $logFilePath -Value "$appName installed successfully"
+        Add-Content -Path $logFilePath -Value "Teamwork installed successfully"
     } catch {
-        Add-Content -Path $logFilePath -Value "Error installing $($appName): $_"
+        Add-Content -Path $logFilePath -Value "Error installing Teamwork: $_"
     }
-    
-}
+}# InstallTeamwork function downloads and installs Teamwork from a specified URL.
+
 function InstallZoom {
     param($installerUrl, $logFilePath)
 
@@ -170,7 +154,8 @@ function InstallZoom {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Zoom: $_"
     }
-}
+}# InstallZoom function downloads and installs Zoom from a specified URL.
+
 # Main script starts here
 try {
     # Set destination folder and log file path
@@ -214,23 +199,30 @@ try {
     # Set the timezone on the AWS instance
     Set-TimeZone -Id $timezone
     
-    # Install Bluebeam
-    # https://subscription-registration.bluebeam.com/
-    # $bluebeamInstallerUrl = "https://downloads.bluebeam.com/software/downloads/20.2.85/BbRevu20.2.85.exe"
-    # try {
-    #     InstallBluebeam -installerUrl $bluebeamInstallerUrl -logFilePath $logFilePath
-    # } catch {
-    #     Add-Content -Path $logFilePath -Value "Error installing Bluebeam: $_"
-    # }
-    
-# Install Google Chrome
-try {
-    $chromeInstallerUrl = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
-    InstallChrome -installerUrl $chromeInstallerUrl -logFilePath $logFilePath
-} catch {
-    Add-Content -Path $logFilePath -Value "Error installing Google Chrome: $_"
-}
+    # Install Bluebeam Revu
+    try {
+        $bluebeamInstallerUrl = "https://support.bluebeam.com/downloads/revu/windows/revu2020/20.2.30/BluebeamRevu2020.2.30_x64.exe"
+        $bluebeamLocalPath = "C:\temp_bluebeam_installer.exe"
+        $webClient = New-Object System.Net.WebClient
+        $webClient.DownloadFile($bluebeamInstallerUrl, $bluebeamLocalPath)
+        Start-Process -FilePath $bluebeamLocalPath -Args "/quiet" -Wait
+        Remove-Item $bluebeamLocalPath
+        Add-Content -Path $logFilePath -Value "Bluebeam Revu installed successfully"
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing Bluebeam Revu: $_"
+    }
 
+    # Install Google Chrome
+    try {
+        $chrome_url = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
+        $chrome_local_path = "C:\temp_chrome_installer.exe"
+        $webClient = New-Object System.Net.WebClient
+        $webClient.DownloadFile($chrome_url, $chrome_local_path)
+        Start-Process -FilePath $chrome_local_path -Args "/silent /install" -Wait
+
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing Google Chrome Browser: $_"
+    }
     
     # Install Dropbox
     try {
@@ -250,27 +242,22 @@ try {
 
     # Install Office 365
     try {
-        $odtUrl = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_13426-20308.exe"
-        $configUrl = "https://gist.githubusercontent.com/ChatGPT/3c3a735e2a1f8d3296d9ac6f49e6c92e/raw/949b6e114b6ba752b6f1974e8a4d1839e9efadf9/office365_config.xml"
-        InstallOffice365 -odtUrl $odtUrl -configUrl $configUrl -logFilePath $logFilePath
+        $office365InstallerUrl = "https://go.microsoft.com/fwlink/?linkid=525133"
+        InstallOffice365 -installerUrl $office365InstallerUrl -logFilePath $logFilePath
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Office 365: $_"
     }
-    
-    # Define log file path
-    $logFilePath = "C:\teamwork_installation_log.txt"
-    
-    # Install Teamwork Projects Desktop
-    $teamworkProjectsInstallerUrl = "https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe"
-    InstallTeamwork -appName "Teamwork Projects Desktop" -installerUrl $teamworkProjectsInstallerUrl -logFilePath $logFilePath
-    
-    # Install Teamwork Chat
-    $teamworkChatInstallerUrl = "https://www.teamwork.com/chat-apps" # Replace this with the actual URL when available
-    InstallTeamwork -appName "Teamwork Chat" -installerUrl $teamworkChatInstallerUrl -logFilePath $logFilePath
-    
+
+    # Install Teamwork
+    # https://www.teamwork.com/chat-apps
+    try {
+        $teamworkInstallerUrl = "https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe"
+        InstallTeamwork -installerUrl $teamworkInstallerUrl -logFilePath $logFilePath
+    } catch {
+        Add-Content -Path $logFilePath -Value "Error installing Teamwork Projects Desktop: $_"
+    }
 
     # Install Zoom
-    # https://cdn.zoom.us/prod/5.5.12494.0204/ZoomInstaller.exe
     try {
         $zoomInstallerUrl = "https://cdn.zoom.us/prod/5.5.12494.0204/ZoomInstaller.exe"
         InstallZoom -installerUrl $zoomInstallerUrl -logFilePath $logFilePath
