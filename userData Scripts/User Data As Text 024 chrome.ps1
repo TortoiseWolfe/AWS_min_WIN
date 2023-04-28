@@ -54,7 +54,8 @@ function DownloadAndRunExampleScript {
         # Log an error if the example_script.ps1 file is not found in the repository
         Add-Content -Path $logFilePath -Value "Error: example_script.ps1 not found in the repository"
     }
-}# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.function InstallBluebeam {
+}# DownloadAndRunExampleScript function downloads a specified repository and runs the example script.
+function InstallBluebeam {
     param($installerUrl, $logFilePath)
 
     try {
@@ -66,6 +67,7 @@ function DownloadAndRunExampleScript {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Bluebeam: $_"
     }
+}
 function InstallChrome {
     param($installerUrl, $logFilePath)
 
@@ -143,17 +145,18 @@ function InstallPowerShell7 {
     }
 }
 function InstallTeamwork {
-    param($installerUrl, $logFilePath)
-
+    param($appName, $installerUrl, $logFilePath)
+    
     try {
-        $tempInstaller = "C:\temp_teamwork.exe"
+        $tempInstaller = "C:\temp_$($appName).exe"
         (New-Object System.Net.WebClient).DownloadFile($installerUrl, $tempInstaller)
         Start-Process -FilePath $tempInstaller -ArgumentList "/quiet" -Wait
         Remove-Item $tempInstaller
-        Add-Content -Path $logFilePath -Value "Teamwork installed successfully"
+        Add-Content -Path $logFilePath -Value "$appName installed successfully"
     } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Teamwork: $_"
+        Add-Content -Path $logFilePath -Value "Error installing $($appName): $_"
     }
+    
 }
 function InstallZoom {
     param($installerUrl, $logFilePath)
@@ -220,17 +223,14 @@ try {
     #     Add-Content -Path $logFilePath -Value "Error installing Bluebeam: $_"
     # }
     
-    # Install Google Chrome
-    try {
-        $chrome_url = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
-        $chrome_local_path = "C:\temp_chrome_installer.exe"
-        $webClient = New-Object System.Net.WebClient
-        $webClient.DownloadFile($chrome_url, $chrome_local_path)
-        Start-Process -FilePath $chrome_local_path -Args "/silent /install" -Wait
+# Install Google Chrome
+try {
+    $chromeInstallerUrl = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
+    InstallChrome -installerUrl $chromeInstallerUrl -logFilePath $logFilePath
+} catch {
+    Add-Content -Path $logFilePath -Value "Error installing Google Chrome: $_"
+}
 
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Google Chrome Browser: $_"
-    }
     
     # Install Dropbox
     try {
@@ -256,16 +256,18 @@ try {
     } catch {
         Add-Content -Path $logFilePath -Value "Error installing Office 365: $_"
     }
-
-    # Install Teamwork
-    # https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe
-    # https://www.teamwork.com/chat-apps
-    try {
-        $teamworkInstallerUrl = "https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe"
-        InstallTeamwork -installerUrl $teamworkInstallerUrl -logFilePath $logFilePath
-    } catch {
-        Add-Content -Path $logFilePath -Value "Error installing Teamwork Projects Desktop: $_"
-    }
+    
+    # Define log file path
+    $logFilePath = "C:\teamwork_installation_log.txt"
+    
+    # Install Teamwork Projects Desktop
+    $teamworkProjectsInstallerUrl = "https://tw-open.s3.amazonaws.com/projects/electron/releases/teamwork-projects-desktop.exe"
+    InstallTeamwork -appName "Teamwork Projects Desktop" -installerUrl $teamworkProjectsInstallerUrl -logFilePath $logFilePath
+    
+    # Install Teamwork Chat
+    $teamworkChatInstallerUrl = "https://www.teamwork.com/chat-apps" # Replace this with the actual URL when available
+    InstallTeamwork -appName "Teamwork Chat" -installerUrl $teamworkChatInstallerUrl -logFilePath $logFilePath
+    
 
     # Install Zoom
     # https://cdn.zoom.us/prod/5.5.12494.0204/ZoomInstaller.exe
